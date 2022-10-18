@@ -14,11 +14,7 @@ variable "cluster_identity_oidc_issuer_arn" {
   description = "The OIDC Identity issuer ARN for the cluster that can be used to associate IAM roles with a service account"
 }
 
-variable "helm_create_namespace" {
-  type        = bool
-  default     = true
-  description = "Create the namespace if it does not yet exist"
-}
+# ================ common variables (required) ================
 
 variable "helm_chart_name" {
   type        = string
@@ -37,41 +33,88 @@ variable "helm_release_name" {
   default     = "argocd"
   description = "Helm release name"
 }
-
 variable "helm_repo_url" {
   type        = string
   default     = "https://argoproj.github.io/argo-helm"
   description = "Helm repository"
 }
 
+variable "helm_create_namespace" {
+  type        = bool
+  default     = true
+  description = "Create the namespace if it does not yet exist"
+}
+
 variable "namespace" {
   type        = string
   default     = "argo"
-  description = "The K8s namespace in which the ingress-nginx has been created"
+  description = "The K8s namespace in which the argo-cd service account has been created"
 }
 
 variable "settings" {
   type        = map(any)
   default     = {}
-  description = "Additional settings which will be passed to the Helm chart values, see https://artifacthub.io/packages/helm/argo/argo-cd"
+  description = "Additional helm sets which will be passed to the Helm chart values, see https://artifacthub.io/packages/helm/argo/argo-cd?modal=values"
 }
 
 variable "values" {
   type        = string
   default     = ""
-  description = "Additional yaml encoded values which will be passed to the Helm chart."
+  description = "Additional yaml encoded values which will be passed to the Helm chart, see https://artifacthub.io/packages/helm/argo/argo-cd?modal=values"
 }
 
-variable "self_managed" {
+# ================ IRSA variables (optional) ================
+
+variable "rbac_create" {
   type        = bool
   default     = true
-  description = "If set to true, the module will create ArgoCD Application manifest in the cluster and abandon the Helm release"
+  description = "Whether to create and use RBAC resources"
+}
+
+variable "service_account_create_server" {
+  type        = bool
+  default     = true
+  description = "Whether to create Service Account for the server"
+}
+
+variable "service_account_name_server" {
+  default     = "argocd-server"
+  description = "The k8s argo-cd Service Account name for the server"
+}
+
+variable "service_account_create_application_controller" {
+  type        = bool
+  default     = true
+  description = "Whether to create Service Account for the application controller"
+}
+
+variable "service_account_name_application_controller" {
+  default     = "argocd-application-controller"
+  description = "The k8s argo-cd Service Account name for the application controller"
 }
 
 variable "irsa_role_create" {
   type        = bool
   default     = true
   description = "Whether to create IRSA role and annotate service account"
+}
+
+variable "irsa_policy_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether to create opinionated policy to allow operations on specified zones in `policy_allowed_zone_ids`."
+}
+
+variable "irsa_assume_role_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether IRSA is allowed to assume role defined by irsa_assume_role_arn."
+}
+
+variable "irsa_assume_role_arn" {
+  type        = string
+  default     = ""
+  description = "Assume role arn. Assume role must be enabled."
 }
 
 variable "irsa_additional_policies" {
@@ -82,8 +125,8 @@ variable "irsa_additional_policies" {
 
 variable "irsa_role_name_prefix" {
   type        = string
-  default     = "argocd-irsa"
-  description = "The IRSA role name prefix for vector"
+  default     = "<$addon-name>-irsa"
+  description = "The IRSA role name prefix for <$addon-name>"
 }
 
 variable "irsa_tags" {
@@ -92,15 +135,7 @@ variable "irsa_tags" {
   description = "IRSA resources tags"
 }
 
-variable "service_account_name_server" {
-  default     = "argocd-server"
-  description = "The k8s argocd service account name for server"
-}
-
-variable "service_account_name_application_controller" {
-  default     = "argocd-application-controller"
-  description = "The k8s argocd service account name for application controller"
-}
+# ================ argo variables (required) ================
 
 variable "argo_namespace" {
   type        = string
@@ -133,6 +168,10 @@ variable "argo_project" {
 }
 
 variable "argo_info" {
+  type = list(object({
+    name  = string
+    value = string
+  }))
   default = [{
     "name"  = "terraform"
     "value" = "true"
@@ -141,37 +180,31 @@ variable "argo_info" {
 }
 
 variable "argo_sync_policy" {
+  type        = any
   description = "ArgoCD syncPolicy manifest parameter"
   default     = {}
 }
 
 variable "argo_metadata" {
-  default = {}
-  # example value:
-  # argo_metadata = {
-  #   "annotations" : {}
-  #   "labels" : {}
-  #   "finalizers" : [
-  #     "resources-finalizer.argocd.argoproj.io"
-  #   ]
-  # }
+  type = any
+  default = {
+    "finalizers" : [
+      "resources-finalizer.argocd.argoproj.io"
+    ]
+  }
   description = "ArgoCD Application metadata configuration. Override or create additional metadata parameters"
 }
 
 variable "argo_apiversion" {
+  type        = string
   default     = "argoproj.io/v1alpha1"
   description = "ArgoCD Appliction apiVersion"
 }
 
 variable "argo_spec" {
+  type        = any
   default     = {}
   description = "ArgoCD Application spec configuration. Override or create additional spec parameters"
-}
-
-variable "argo_skip_crds" {
-  type        = bool
-  default     = false
-  description = "If set, no CRDs will be installed when deploying argo application"
 }
 
 variable "argo_helm_values" {
@@ -180,6 +213,8 @@ variable "argo_helm_values" {
   description = "Value overrides to use when deploying argo application object with helm"
 }
 
+# ================ argo kubernetes manifest variables (required) ================
+
 variable "argo_kubernetes_manifest_computed_fields" {
   type        = list(string)
   default     = ["metadata.labels", "metadata.annotations"]
@@ -187,6 +222,7 @@ variable "argo_kubernetes_manifest_computed_fields" {
 }
 
 variable "argo_kubernetes_manifest_field_manager_name" {
+  type        = string
   default     = "Terraform"
   description = "The name of the field manager to use when applying the kubernetes manifest resource. Defaults to Terraform"
 }
@@ -202,6 +238,8 @@ variable "argo_kubernetes_manifest_wait_fields" {
   default     = {}
   description = "A map of fields and a corresponding regular expression with a pattern to wait for. The provider will wait until the field matches the regular expression. Use * for any value."
 }
+
+# ================ helm release variables (required) ================
 
 variable "helm_repo_key_file" {
   type        = string
