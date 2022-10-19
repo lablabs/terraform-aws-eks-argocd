@@ -1,12 +1,12 @@
 locals {
-  irsa_role_create = var.enabled && (var.service_account_create_server || var.service_account_create_application_controller) && var.irsa_role_create
+  irsa_role_create = var.enabled && (var.service_accounts.controller.create || var.service_accounts.server.create) && var.irsa_role_create
 }
 
 data "aws_iam_policy_document" "this_irsa" {
   count = local.irsa_role_create ? 1 : 0
 
-  dynamic statement {
-    for_each = var.service_account_create_application_controller
+  dynamic "statement" {
+    for_each = { for component, attributes in var.service_accounts : component => attributes if attributes.create }
 
     content {
       actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -21,32 +21,7 @@ data "aws_iam_policy_document" "this_irsa" {
         variable = "${replace(var.cluster_identity_oidc_issuer, "https://", "")}:sub"
 
         values = [
-          "system:serviceaccount:${var.namespace}:${var.service_account_name_server}"
-        ]
-      }
-
-      effect = "Allow"
-    }
-  }
-
-
-  dynamic statement {
-    for_each = var.service_account_create_application_controller ? [true] : []
-
-    content {
-      actions = ["sts:AssumeRoleWithWebIdentity"]
-
-      principals {
-        type        = "Federated"
-        identifiers = [var.cluster_identity_oidc_issuer_arn]
-      }
-
-      condition {
-        test     = "StringEquals"
-        variable = "${replace(var.cluster_identity_oidc_issuer, "https://", "")}:sub"
-
-        values = [
-          "system:serviceaccount:${var.namespace}:${var.service_account_name_application_controller}"
+          "system:serviceaccount:${var.namespace}:${statement.value.name}"
         ]
       }
 

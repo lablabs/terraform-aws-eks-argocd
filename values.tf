@@ -2,8 +2,8 @@ locals {
   values = yamlencode({
     "controller" : {
       "serviceAccount" : {
-        "create" : var.service_account_create_application_controller
-        "name": var.service_account_name_application_controller
+        "create" : var.service_accounts.controller.create
+        "name" : var.service_accounts.controller.name
         "annotations" : {
           "eks.amazonaws.com/role-arn" : local.irsa_role_create ? aws_iam_role.this[0].arn : ""
         }
@@ -11,8 +11,8 @@ locals {
     }
     "server" : {
       "serviceAccount" : {
-        "create": var.service_account_create_server
-        "name": var.service_account_name_server
+        "create" : var.service_accounts.server.create
+        "name" : var.service_accounts.server.name
         "annotations" : {
           "eks.amazonaws.com/role-arn" : local.irsa_role_create ? aws_iam_role.this[0].arn : ""
         }

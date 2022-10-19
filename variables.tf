@@ -63,58 +63,42 @@ variable "values" {
   description = "Additional yaml encoded values which will be passed to the Helm chart, see https://artifacthub.io/packages/helm/argo/argo-cd?modal=values"
 }
 
+variable "self_managed" {
+  type        = bool
+  default     = true
+  description = "If set to true, the module will create ArgoCD Application manifest in the cluster and abandon the Helm release"
+}
+
 # ================ IRSA variables (optional) ================
 
-variable "rbac_create" {
-  type        = bool
-  default     = true
-  description = "Whether to create and use RBAC resources"
-}
-
-variable "service_account_create_server" {
-  type        = bool
-  default     = true
-  description = "Whether to create Service Account for the server"
-}
-
-variable "service_account_name_server" {
-  default     = "argocd-server"
-  description = "The k8s argo-cd Service Account name for the server"
-}
-
-variable "service_account_create_application_controller" {
-  type        = bool
-  default     = true
-  description = "Whether to create Service Account for the application controller"
-}
-
-variable "service_account_name_application_controller" {
-  default     = "argocd-application-controller"
-  description = "The k8s argo-cd Service Account name for the application controller"
+variable "service_accounts" {
+  type = object({
+    controller = object({
+      create = bool
+      name   = string
+    })
+    server = object({
+      create = bool
+      name   = string
+    })
+  })
+  default = {
+    controller = {
+      create = true
+      name   = "argocd-application-controller"
+    }
+    server = {
+      create = true,
+      name   = "argocd-server"
+    }
+  }
+  description = "The k8s argo-cd service accounts"
 }
 
 variable "irsa_role_create" {
   type        = bool
   default     = true
   description = "Whether to create IRSA role and annotate service account"
-}
-
-variable "irsa_policy_enabled" {
-  type        = bool
-  default     = true
-  description = "Whether to create opinionated policy to allow operations on specified zones in `policy_allowed_zone_ids`."
-}
-
-variable "irsa_assume_role_enabled" {
-  type        = bool
-  default     = false
-  description = "Whether IRSA is allowed to assume role defined by irsa_assume_role_arn."
-}
-
-variable "irsa_assume_role_arn" {
-  type        = string
-  default     = ""
-  description = "Assume role arn. Assume role must be enabled."
 }
 
 variable "irsa_additional_policies" {
@@ -125,7 +109,7 @@ variable "irsa_additional_policies" {
 
 variable "irsa_role_name_prefix" {
   type        = string
-  default     = "<$addon-name>-irsa"
+  default     = "argocd-irsa"
   description = "The IRSA role name prefix for <$addon-name>"
 }
 
@@ -186,13 +170,21 @@ variable "argo_sync_policy" {
 }
 
 variable "argo_metadata" {
-  type = any
-  default = {
-    "finalizers" : [
-      "resources-finalizer.argocd.argoproj.io"
-    ]
-  }
-  description = "ArgoCD Application metadata configuration. Override or create additional metadata parameters"
+  type        = any
+  default     = {}
+  description = <<EOF
+ArgoCD Application metadata configuration. Override or create additional metadata parameters
+
+```
+{
+   "annotations" : {}
+   "labels" : {}
+   "finalizers" : [
+     "resources-finalizer.argocd.argoproj.io"
+   ]
+}
+```
+  EOF
 }
 
 variable "argo_apiversion" {
@@ -205,6 +197,12 @@ variable "argo_spec" {
   type        = any
   default     = {}
   description = "ArgoCD Application spec configuration. Override or create additional spec parameters"
+}
+
+variable "argo_skip_crds" {
+  type        = bool
+  default     = false
+  description = "If set, no CRDs will be installed when deploying argo application"
 }
 
 variable "argo_helm_values" {
