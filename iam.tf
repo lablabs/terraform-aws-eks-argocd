@@ -1,5 +1,5 @@
 locals {
-  irsa_role_create = var.enabled && (var.service_accounts.controller.create || var.service_accounts.server.create) && var.irsa_role_create
+  irsa_role_create = var.enabled && length([for sa in values(var.service_accounts)[*] : sa if sa.create]) > 0 && var.irsa_role_create
 }
 
 data "aws_iam_policy_document" "this_irsa" {

@@ -77,7 +77,19 @@ variable "service_accounts" {
       create = bool
       name   = string
     })
+    applicationSet = object({
+      create = bool
+      name   = string
+    })
     server = object({
+      create = bool
+      name   = string
+    })
+    dex = object({
+      create = bool
+      name   = string
+    })
+    repoServer = object({
       create = bool
       name   = string
     })
@@ -87,9 +99,21 @@ variable "service_accounts" {
       create = true
       name   = "argocd-application-controller"
     }
+    applicationSet = {
+      create = true
+      name   = "argocd-applicationset-controller"
+    }
     server = {
-      create = true,
+      create = true
       name   = "argocd-server"
+    }
+    dex = {
+      create = true
+      name   = "argocd-dex-server"
+    }
+    repoServer = {
+      create = true
+      name   = "argocd-repo-server"
     }
   }
   description = "The k8s argo-cd service accounts"
