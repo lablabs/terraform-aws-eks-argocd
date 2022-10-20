@@ -6,43 +6,49 @@ We help companies build, run, deploy and scale software and infrastructure by em
 
 ---
 
-[![Terraform validate](https://github.com/lablabs/terraform-helm-argocd/actions/workflows/validate.yaml/badge.svg)](https://github.com/lablabs/terraform-helm-argocd/actions/workflows/validate.yaml)
-[![pre-commit](https://github.com/lablabs/terraform-helm-argocd/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/lablabs/terraform-helm-argocd/actions/workflows/pre-commit.yml)
+[![Terraform validate](https://github.com/lablabs/terraform-aws-eks-argocd/actions/workflows/validate.yaml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-argocd/actions/workflows/validate.yaml)
+[![pre-commit](https://github.com/lablabs/terraform-aws-argocd/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/lablabs/terraform-aws-eks-argocd/actions/workflows/pre-commit.yml)
 
 ## Description
 
-A terraform module to deploy the ArgoCD on Kubernetes cluster.
-
-## Deployment methods
-
-This module deploys ArgoCD in two different ways:
-1. A helm release that is further managed by Helm
-2. A helm release along with ArgoCD Application CRD which allows Argo to self-manage itself.
-
-### 1. Helm
-Deploy helm chart by helm (default method, set `enabled = true`)
-
-### 2.1. Argo kubernetes
-Deploy helm chart as argo application by kubernetes manifest (set `enabled = true` and `argo_enabled = true`)
-
-### 2.2. Argo helm
-When deploying with ArgoCD application, Kubernetes terraform provider requires access to Kubernetes cluster API during plan time. This introduces potential issue when you want to deploy the cluster with this addon at the same time, during the same Terraform run.
-
-To overcome this issue, the module deploys the ArgoCD application object using the Helm provider, which does not require API access during plan. If you want to deploy the application using this workaround, you can set the `argo_helm_enabled` variable to `true`.
-
-Create helm release resource and deploy it as argo application (set `enabled = true`, `argo_enabled = true` and `argo_helm_enabled = true`)
-
-### ArgoCD self-managed mode
-
-This module provides an option to deploy in self managed mode. If `self_managed` is set, the module will make an initial deployment of ArgoCD with Helm and then proceed to deploy ArgoCD Application object, so you're able to manage ArgoCD from ArgoCD. The helm release has a lifecycle ignore_changes rules set on it's resource, so no further changes are made to the release. It is only used for the initial ArgoCD deployment and only the newly deployed, self-managed object is used.
-
-**Important notice**
-
-Changing the `self_managed` variable after ArgoCD was already deployed will result in it's re-creation.
+A Terraform module to deploy the ArgoCD on Amazon EKS cluster.
 
 ## Related Projects
 
 Check out other [terraform kubernetes addons](https://github.com/orgs/lablabs/repositories?q=terraform-aws-eks&type=public&language=&sort=).
+
+## Deployment methods
+
+This module deploys ArgoCD in two different ways:
+1. A Helm release that is further managed by Helm
+2. A Helm release along with ArgoCD Application CRD which allows Argo to self-manage itself.
+
+### 1. Helm
+Deploy Helm chart via Helm resource (default method, set `enabled = true`)
+
+### 2.1. Argo Kubernetes
+Deploy Helm chart as ArgoCD Application via Kubernetes manifest resource (set `enabled = true` and `argo_enabled = true`)
+
+> **Warning**
+>
+> When deploying with ArgoCD application, Kubernetes terraform provider requires access to Kubernetes cluster API during plan time. This introduces potential issue when you want to deploy the cluster with this addon at the same time, during the same Terraform run.
+>
+> To overcome this issue, the module deploys the ArgoCD application object using the Helm provider, which does not require API access during plan. If you want to deploy the application using this workaround, you can set the `argo_helm_enabled` variable to `true`.
+
+### 2.2. Argo Helm
+Deploy Helm chart as ArgoCD Application via Helm resource (set `enabled = true`, `argo_enabled = true` and `argo_helm_enabled = true`)
+
+## ArgoCD self-managed mode
+
+This module provides an option to deploy in self-managed mode. If `self_managed` is set, the module will make an initial deployment of ArgoCD with Helm and then proceed to deploy ArgoCD Application object, so you're able to manage ArgoCD from ArgoCD. The helm release has a lifecycle ignore_changes rules set on its resource, so no further changes are made to the release. It is only used for the initial ArgoCD deployment and only the newly deployed, self-managed object is used.
+
+> **Warning**
+>
+> Changing the `self_managed` variable after ArgoCD was already deployed will result in its re-creation.
+
+## AWS IAM resources
+
+To disable of creation IRSA role, set `irsa_role_create = false`.
 
 ## Examples
 

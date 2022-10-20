@@ -27,6 +27,7 @@ module "argocd_helm" {
 
 }
 
+# Please, see README.md and Argo Kubernetes deployment method for implications of using Kubernetes installation method
 module "argocd_self_managed_kubernetes" {
   source = "../../"
 
