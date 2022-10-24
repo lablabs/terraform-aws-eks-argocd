@@ -134,7 +134,7 @@ variable "irsa_additional_policies" {
 variable "irsa_role_name_prefix" {
   type        = string
   default     = "argocd-irsa"
-  description = "The IRSA role name prefix for <$addon-name>"
+  description = "The IRSA role name prefix for argo-cd"
 }
 
 variable "irsa_tags" {
