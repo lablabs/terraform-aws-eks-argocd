@@ -1,14 +1,9 @@
 locals {
-  argo_application_metadata_finalizers = try(var.argo_metadata.finalizers, [])
-  argo_application_metadata = merge(
-    {
-      "labels" : try(var.argo_metadata.labels, {}),
-      "annotations" : try(var.argo_metadata.annotations, {}),
-    },
-    length(local.argo_application_metadata_finalizers) > 0 ? {
-      "finalizers" : local.argo_application_metadata_finalizers
-    } : {}
-  )
+  argo_application_metadata = {
+    "labels" : try(var.argo_metadata.labels, {}),
+    "annotations" : try(var.argo_metadata.annotations, {}),
+    "finalizers" : try(var.argo_metadata.finalizers, [])
+  }
   argo_application_values = {
     "project" : var.argo_project
     "source" : {
