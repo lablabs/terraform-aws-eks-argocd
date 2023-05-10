@@ -34,7 +34,7 @@ resource "aws_iam_role" "this" {
   count                = local.irsa_role_create ? 1 : 0
   name                 = "${var.irsa_role_name_prefix}-${var.helm_chart_name}"
   assume_role_policy   = data.aws_iam_policy_document.this_irsa[0].json
-  permissions_boundary = var.irsa_role_permission_boundary
+  permissions_boundary = var.irsa_role_permissions_boundary
   tags                 = var.irsa_tags
 }
 

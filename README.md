@@ -142,7 +142,7 @@ No modules.
 | <a name="input_irsa_additional_policies"></a> [irsa\_additional\_policies](#input\_irsa\_additional\_policies) | Map of the additional policies to be attached to default role. Where key is arbitrary id and value is policy arn. | `map(string)` | `{}` | no |
 | <a name="input_irsa_role_create"></a> [irsa\_role\_create](#input\_irsa\_role\_create) | Whether to create IRSA role and annotate service account | `bool` | `true` | no |
 | <a name="input_irsa_role_name_prefix"></a> [irsa\_role\_name\_prefix](#input\_irsa\_role\_name\_prefix) | The IRSA role name prefix for argo-cd | `string` | `"argocd-irsa"` | no |
-| <a name="input_irsa_role_permission_boundary"></a> [irsa\_role\_permission\_boundary](#input\_irsa\_role\_permission\_boundary) | (Optional) ARN of the policy that is used to set the permissions boundary for the role | `string` | `null` | no |
+| <a name="input_irsa_role_permissions_boundary"></a> [irsa\_role\_permissions\_boundary](#input\_irsa\_role\_permissions\_boundary) | (Optional) ARN of the policy that is used to set the permissions boundary for the role | `string` | `null` | no |
 | <a name="input_irsa_tags"></a> [irsa\_tags](#input\_irsa\_tags) | IRSA resources tags | `map(string)` | `{}` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | The K8s namespace in which the argo-cd service account has been created | `string` | `"argo"` | no |
 | <a name="input_self_managed"></a> [self\_managed](#input\_self\_managed) | If set to true, the module will create ArgoCD Application manifest in the cluster and abandon the Helm release | `bool` | `true` | no |
