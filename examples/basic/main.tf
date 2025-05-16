@@ -1,72 +1,76 @@
-module "argocd_disabled" {
+module "addon_installation_disabled" {
   source = "../../"
-
-  cluster_identity_oidc_issuer     = module.eks_cluster.eks_cluster_identity_oidc_issuer
-  cluster_identity_oidc_issuer_arn = module.eks_cluster.eks_cluster_identity_oidc_issuer_arn
 
   enabled = false
-}
-
-module "argocd_helm" {
-  source = "../../"
 
   cluster_identity_oidc_issuer     = module.eks_cluster.eks_cluster_identity_oidc_issuer
   cluster_identity_oidc_issuer_arn = module.eks_cluster.eks_cluster_identity_oidc_issuer_arn
+}
+
+module "addon_installation_helm" {
+  source = "../../"
 
   enabled           = true
   argo_enabled      = false
   argo_helm_enabled = false
 
-  self_managed = false
+  cluster_identity_oidc_issuer     = module.eks_cluster.eks_cluster_identity_oidc_issuer
+  cluster_identity_oidc_issuer_arn = module.eks_cluster.eks_cluster_identity_oidc_issuer_arn
 
-  helm_release_name = "argocd"
-  namespace         = "argocd"
-
-  helm_timeout = 240
-  helm_wait    = true
-
+  values = yamlencode({
+    # insert sample values here
+  })
 }
 
 # Please, see README.md and Argo Kubernetes deployment method for implications of using Kubernetes installation method
-module "argocd_self_managed_kubernetes" {
+module "addon_installation_argo_kubernetes" {
   source = "../../"
-
-  cluster_identity_oidc_issuer     = module.eks_cluster.eks_cluster_identity_oidc_issuer
-  cluster_identity_oidc_issuer_arn = module.eks_cluster.eks_cluster_identity_oidc_issuer_arn
 
   enabled           = true
   argo_enabled      = true
   argo_helm_enabled = false
 
-  self_managed = true
+  cluster_identity_oidc_issuer     = module.eks_cluster.eks_cluster_identity_oidc_issuer
+  cluster_identity_oidc_issuer_arn = module.eks_cluster.eks_cluster_identity_oidc_issuer_arn
 
-  helm_release_name = "argocd-kubernetes"
-  namespace         = "argocd-kubernetes"
+  values = yamlencode({
+    # insert sample values here
+  })
+
+  self_managed_helm_release_name = "argocd"
 
   argo_sync_policy = {
-    "automated" : {}
-    "syncOptions" = ["CreateNamespace=true"]
+    automated   = {}
+    syncOptions = ["CreateNamespace=true"]
   }
 }
 
-module "argocd_self_managed_helm" {
+module "addon_installation_argo_helm" {
   source = "../../"
-
-  cluster_identity_oidc_issuer     = module.eks_cluster.eks_cluster_identity_oidc_issuer
-  cluster_identity_oidc_issuer_arn = module.eks_cluster.eks_cluster_identity_oidc_issuer_arn
 
   enabled           = true
   argo_enabled      = true
   argo_helm_enabled = true
 
-  self_managed = true
+  cluster_identity_oidc_issuer     = module.eks_cluster.eks_cluster_identity_oidc_issuer
+  cluster_identity_oidc_issuer_arn = module.eks_cluster.eks_cluster_identity_oidc_issuer_arn
 
-  helm_release_name = "argocd-helm"
-  namespace         = "argocd-helm"
+  values = yamlencode({
+    # insert sample values here
+  })
 
-  argo_namespace = "argo"
+  self_managed_helm_release_name = "argocd"
+  helm_release_name              = "argocd-application" # a different name to avoid collision with the self-managed Helm release
+
+  argo_spec = {
+    source = {
+      helm = {
+        releaseName = "argocd" # override the release name to addopt resources created by the self-managed Helm release
+      }
+    }
+  }
   argo_sync_policy = {
-    "automated" : {}
-    "syncOptions" = ["CreateNamespace=true"]
+    automated   = {}
+    syncOptions = ["CreateNamespace=true"]
   }
 }
