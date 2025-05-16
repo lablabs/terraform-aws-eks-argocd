@@ -7,3 +7,5 @@ README.md
 .github/workflows/renovate.yaml
 renovate.json
 addon.tf
+addon-oidc.tf
+variables-addon-oidc.tf
