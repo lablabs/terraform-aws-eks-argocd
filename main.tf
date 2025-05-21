@@ -117,4 +117,8 @@ locals {
       }
     }
   })
+
+  addon_depends_on = [
+    helm_release.self_managed
+  ]
 }

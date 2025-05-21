@@ -11,7 +11,7 @@ locals {
 }
 
 module "addon" {
-  source = "git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon?ref=v0.0.17"
+  source = "git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon?ref=v0.0.18"
 
   enabled = var.enabled
 
@@ -86,7 +86,7 @@ module "addon" {
   values   = one(data.utils_deep_merge_yaml.values[*].output)
 
   depends_on = [
-    helm_release.self_managed
+    local.addon_depends_on
   ]
 }
 
