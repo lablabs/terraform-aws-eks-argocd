@@ -51,7 +51,7 @@ See [basic example](examples/basic) for further information.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_addon"></a> [addon](#module\_addon) | git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon | v0.0.18 |
-| <a name="module_addon-irsa"></a> [addon-irsa](#module\_addon-irsa) | git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon-irsa | v0.0.18 |
+| <a name="module_addon-irsa"></a> [addon-irsa](#module\_addon-irsa) | git::https://github.com/lablabs/terraform-aws-eks-universal-addon.git//modules/addon-irsa | v0.0.21 |
 ## Resources
 
 | Name | Type |
@@ -67,10 +67,12 @@ See [basic example](examples/basic) for further information.
 |------|-------------|------|
 | <a name="input_application_controller_irsa_additional_policies"></a> [application\_controller\_irsa\_additional\_policies](#input\_application\_controller\_irsa\_additional\_policies) | Additional IAM policies to attach to the ArgoCD Application controller IRSA role. | `map(string)` |
 | <a name="input_application_controller_irsa_role_create"></a> [application\_controller\_irsa\_role\_create](#input\_application\_controller\_irsa\_role\_create) | Set to false to prevent the ArgoCD Application controller IRSA role from being created. | `bool` |
+| <a name="input_application_controller_irsa_role_name"></a> [application\_controller\_irsa\_role\_name](#input\_application\_controller\_irsa\_role\_name) | Name of the ArgoCD Application controller IRSA role. | `string` |
 | <a name="input_application_controller_service_account_create"></a> [application\_controller\_service\_account\_create](#input\_application\_controller\_service\_account\_create) | Set to false to prevent the ArgoCD Application controller Service Account from being created. | `bool` |
 | <a name="input_application_controller_service_account_name"></a> [application\_controller\_service\_account\_name](#input\_application\_controller\_service\_account\_name) | Name of the ArgoCD Application controller Service Account. | `string` |
 | <a name="input_applicationset_controller_irsa_additional_policies"></a> [applicationset\_controller\_irsa\_additional\_policies](#input\_applicationset\_controller\_irsa\_additional\_policies) | Additional IAM policies to attach to the ArgoCD ApplicationSet controller IRSA role. | `map(string)` |
 | <a name="input_applicationset_controller_irsa_role_create"></a> [applicationset\_controller\_irsa\_role\_create](#input\_applicationset\_controller\_irsa\_role\_create) | Set to false to prevent the ArgoCD ApplicationSet controller IRSA role from being created. | `bool` |
+| <a name="input_applicationset_controller_irsa_role_name"></a> [applicationset\_controller\_irsa\_role\_name](#input\_applicationset\_controller\_irsa\_role\_name) | Name of the ArgoCD ApplicationSet controller IRSA role. | `string` |
 | <a name="input_applicationset_controller_service_account_create"></a> [applicationset\_controller\_service\_account\_create](#input\_applicationset\_controller\_service\_account\_create) | Set to false to prevent the ArgoCD ApplicationSet controller Service Account from being created. | `bool` |
 | <a name="input_applicationset_controller_service_account_name"></a> [applicationset\_controller\_service\_account\_name](#input\_applicationset\_controller\_service\_account\_name) | Name of the ArgoCD ApplicationSet controller Service Account. | `string` |
 | <a name="input_argo_apiversion"></a> [argo\_apiversion](#input\_argo\_apiversion) | ArgoCD Application apiVersion. Defaults to `argoproj.io/v1alpha1`. | `string` |
@@ -105,6 +107,7 @@ See [basic example](examples/basic) for further information.
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | The name of the cluster (required for pod identity). Defaults to `""`. | `string` |
 | <a name="input_dex_server_irsa_additional_policies"></a> [dex\_server\_irsa\_additional\_policies](#input\_dex\_server\_irsa\_additional\_policies) | Additional IAM policies to attach to the ArgoCD Dex Server IRSA role. | `map(string)` |
 | <a name="input_dex_server_irsa_role_create"></a> [dex\_server\_irsa\_role\_create](#input\_dex\_server\_irsa\_role\_create) | Set to false to prevent the ArgoCD Dex Server IRSA role from being created. | `bool` |
+| <a name="input_dex_server_irsa_role_name"></a> [dex\_server\_irsa\_role\_name](#input\_dex\_server\_irsa\_role\_name) | Name of the ArgoCD Dex Server IRSA role. | `string` |
 | <a name="input_dex_server_service_account_create"></a> [dex\_server\_service\_account\_create](#input\_dex\_server\_service\_account\_create) | Set to false to prevent the ArgoCD Dex Server Service Account from being created. | `bool` |
 | <a name="input_dex_server_service_account_name"></a> [dex\_server\_service\_account\_name](#input\_dex\_server\_service\_account\_name) | Name of the ArgoCD Dex Server Service Account. | `string` |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating any resources. | `bool` |
@@ -144,12 +147,12 @@ See [basic example](examples/basic) for further information.
 | <a name="input_helm_wait_for_jobs"></a> [helm\_wait\_for\_jobs](#input\_helm\_wait\_for\_jobs) | If wait is enabled, will wait until all Helm Jobs have been completed before marking the release as successful. It will wait for as long as timeout. Defaults to `false`. | `bool` |
 | <a name="input_irsa_additional_policies"></a> [irsa\_additional\_policies](#input\_irsa\_additional\_policies) | Map of the additional policies to be attached to IRSA role. Where key is arbitrary id and value is policy ARN. Defaults to `{}`. | `map(string)` |
 | <a name="input_irsa_assume_role_arns"></a> [irsa\_assume\_role\_arns](#input\_irsa\_assume\_role\_arns) | List of ARNs assumable by the IRSA role. Applied only if `irsa_assume_role_enabled` is `true`. Defaults to `[]`. | `list(string)` |
-| <a name="input_irsa_assume_role_enabled"></a> [irsa\_assume\_role\_enabled](#input\_irsa\_assume\_role\_enabled) | Whether IRSA is allowed to assume role defined by `irsa_assume_role_arn`. Mutually exclusive with `irsa_policy_enabled`. Defaults to `false`. | `bool` |
+| <a name="input_irsa_assume_role_enabled"></a> [irsa\_assume\_role\_enabled](#input\_irsa\_assume\_role\_enabled) | Whether IRSA is allowed to assume role defined by `irsa_assume_role_arn`. Defaults to `false`. | `bool` |
 | <a name="input_irsa_assume_role_policy_condition_test"></a> [irsa\_assume\_role\_policy\_condition\_test](#input\_irsa\_assume\_role\_policy\_condition\_test) | Specifies the condition test to use for the assume role trust policy. Defaults to `StringEquals`. | `string` |
 | <a name="input_irsa_assume_role_policy_condition_values"></a> [irsa\_assume\_role\_policy\_condition\_values](#input\_irsa\_assume\_role\_policy\_condition\_values) | Specifies the values for the assume role trust policy condition. Each entry in this list must follow the required format `system:serviceaccount:$service_account_namespace:$service_account_name`. If this variable is left as the default, `local.irsa_assume_role_policy_condition_values_default` is used instead, which is a list containing a single value. Note that if this list is defined, the `service_account_name` and `service_account_namespace` variables are ignored. Defaults to `[]`. | `list(string)` |
 | <a name="input_irsa_permissions_boundary"></a> [irsa\_permissions\_boundary](#input\_irsa\_permissions\_boundary) | ARN of the policy that is used to set the permissions boundary for the IRSA role. Defaults to `null`. | `string` |
 | <a name="input_irsa_policy"></a> [irsa\_policy](#input\_irsa\_policy) | AWS IAM policy JSON document to be attached to the IRSA role. Applied only if `irsa_policy_enabled` is `true`. Defaults to `""`. | `string` |
-| <a name="input_irsa_policy_enabled"></a> [irsa\_policy\_enabled](#input\_irsa\_policy\_enabled) | Whether to create IAM policy specified by `irsa_policy`. Mutually exclusive with `irsa_assume_role_enabled`. Defaults to `false`. | `bool` |
+| <a name="input_irsa_policy_enabled"></a> [irsa\_policy\_enabled](#input\_irsa\_policy\_enabled) | Whether to create IAM policy specified by `irsa_policy`. Defaults to `false`. | `bool` |
 | <a name="input_irsa_role_create"></a> [irsa\_role\_create](#input\_irsa\_role\_create) | Whether to create IRSA role and annotate Service Account. Defaults to `true`. | `bool` |
 | <a name="input_irsa_role_name"></a> [irsa\_role\_name](#input\_irsa\_role\_name) | IRSA role name. The value is prefixed by `irsa_role_name_prefix`. Either `irsa_role_name` or `irsa_role_name_prefix` must be set. Defaults to `""`. | `string` |
 | <a name="input_irsa_role_name_prefix"></a> [irsa\_role\_name\_prefix](#input\_irsa\_role\_name\_prefix) | IRSA role name prefix. Either `irsa_role_name_prefix` or `irsa_role_name` must be set. Defaults to `""`. | `string` |
@@ -157,6 +160,7 @@ See [basic example](examples/basic) for further information.
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | The Kubernetes Namespace in which the Helm chart will be installed (required). | `string` |
 | <a name="input_notifications_controller_irsa_additional_policies"></a> [notifications\_controller\_irsa\_additional\_policies](#input\_notifications\_controller\_irsa\_additional\_policies) | Additional IAM policies to attach to the ArgoCD Notifications controller IRSA role. | `map(string)` |
 | <a name="input_notifications_controller_irsa_role_create"></a> [notifications\_controller\_irsa\_role\_create](#input\_notifications\_controller\_irsa\_role\_create) | Set to false to prevent the ArgoCD Notifications controller IRSA role from being created. | `bool` |
+| <a name="input_notifications_controller_irsa_role_name"></a> [notifications\_controller\_irsa\_role\_name](#input\_notifications\_controller\_irsa\_role\_name) | Name of the ArgoCD Notifications controller IRSA role. | `string` |
 | <a name="input_notifications_controller_service_account_create"></a> [notifications\_controller\_service\_account\_create](#input\_notifications\_controller\_service\_account\_create) | Set to false to prevent the ArgoCD Notifications controller Service Account from being created. | `bool` |
 | <a name="input_notifications_controller_service_account_name"></a> [notifications\_controller\_service\_account\_name](#input\_notifications\_controller\_service\_account\_name) | Name of the ArgoCD Notifications controller Service Account. | `string` |
 | <a name="input_pod_identity_additional_policies"></a> [pod\_identity\_additional\_policies](#input\_pod\_identity\_additional\_policies) | Map of the additional policies to be attached to pod identity role. Where key is arbitrary id and value is policy ARN. Defaults to `{}`. | `map(string)` |
@@ -170,12 +174,14 @@ See [basic example](examples/basic) for further information.
 | <a name="input_rbac_create"></a> [rbac\_create](#input\_rbac\_create) | Whether to create and use RBAC resources. Defaults to `true`. | `bool` |
 | <a name="input_repo_server_irsa_additional_policies"></a> [repo\_server\_irsa\_additional\_policies](#input\_repo\_server\_irsa\_additional\_policies) | Additional IAM policies to attach to the ArgoCD Repo Server IRSA role. | `map(string)` |
 | <a name="input_repo_server_irsa_role_create"></a> [repo\_server\_irsa\_role\_create](#input\_repo\_server\_irsa\_role\_create) | Set to false to prevent the ArgoCD Repo Server IRSA role from being created. | `bool` |
+| <a name="input_repo_server_irsa_role_name"></a> [repo\_server\_irsa\_role\_name](#input\_repo\_server\_irsa\_role\_name) | Name of the ArgoCD Repo Server IRSA role. | `string` |
 | <a name="input_repo_server_service_account_create"></a> [repo\_server\_service\_account\_create](#input\_repo\_server\_service\_account\_create) | Set to false to prevent the ArgoCD Repo Server Service Account from being created. | `bool` |
 | <a name="input_repo_server_service_account_name"></a> [repo\_server\_service\_account\_name](#input\_repo\_server\_service\_account\_name) | Name of the ArgoCD Repo Server Service Account. | `string` |
 | <a name="input_self_managed"></a> [self\_managed](#input\_self\_managed) | If set to true, the module will create ArgoCD Application manifest in the cluster and abandon the Helm release | `bool` |
 | <a name="input_self_managed_helm_release_name"></a> [self\_managed\_helm\_release\_name](#input\_self\_managed\_helm\_release\_name) | Helm release name for self-managed installation. Required if `self_managed` is set to `true`. | `string` |
 | <a name="input_server_irsa_additional_policies"></a> [server\_irsa\_additional\_policies](#input\_server\_irsa\_additional\_policies) | Additional IAM policies to attach to the ArgoCD Server IRSA role. | `map(string)` |
 | <a name="input_server_irsa_role_create"></a> [server\_irsa\_role\_create](#input\_server\_irsa\_role\_create) | Set to false to prevent the ArgoCD Server IRSA role from being created. | `bool` |
+| <a name="input_server_irsa_role_name"></a> [server\_irsa\_role\_name](#input\_server\_irsa\_role\_name) | Name of the ArgoCD Server IRSA role. | `string` |
 | <a name="input_server_service_account_create"></a> [server\_service\_account\_create](#input\_server\_service\_account\_create) | Set to false to prevent the ArgoCD Server Service Account from being created. | `bool` |
 | <a name="input_server_service_account_name"></a> [server\_service\_account\_name](#input\_server\_service\_account\_name) | Name of the ArgoCD Server Service Account. | `string` |
 | <a name="input_service_account_create"></a> [service\_account\_create](#input\_service\_account\_create) | Whether to create Service Account. Defaults to `true`. | `bool` |
@@ -188,7 +194,7 @@ See [basic example](examples/basic) for further information.
 | Name | Description |
 |------|-------------|
 | <a name="output_addon"></a> [addon](#output\_addon) | The addon module outputs |
-| <a name="output_addon_irsa"></a> [addon\_irsa](#output\_addon\_irsa) | The addon IRSA module outputs |
+| <a name="output_addon_irsa"></a> [addon\_irsa](#output\_addon\_irsa) | The IRSA addon module outputs |
 ## Contributing and reporting issues
 
 Feel free to create an issue in this repository if you have questions, suggestions or feature requests.

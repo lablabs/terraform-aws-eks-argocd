@@ -21,42 +21,42 @@ locals {
       service_account_create   = var.application_controller_service_account_create
       service_account_name     = var.application_controller_service_account_name
       irsa_role_create         = var.application_controller_irsa_role_create
-      irsa_role_name           = "application"
+      irsa_role_name           = var.application_controller_irsa_role_name
       irsa_additional_policies = var.application_controller_irsa_additional_policies
     }
     applicationset-controller = {
       service_account_create   = var.applicationset_controller_service_account_create
       service_account_name     = var.applicationset_controller_service_account_name
       irsa_role_create         = var.applicationset_controller_irsa_role_create
-      irsa_role_name           = "applicationset"
+      irsa_role_name           = var.applicationset_controller_irsa_role_name
       irsa_additional_policies = var.applicationset_controller_irsa_additional_policies
     }
     notifications-controller = {
       service_account_create   = var.notifications_controller_service_account_create
       service_account_name     = var.notifications_controller_service_account_name
       irsa_role_create         = var.notifications_controller_irsa_role_create
-      irsa_role_name           = "notification"
+      irsa_role_name           = var.notifications_controller_irsa_role_name
       irsa_additional_policies = var.notifications_controller_irsa_additional_policies
     }
     server = {
       service_account_create   = var.server_service_account_create
       service_account_name     = var.server_service_account_name
       irsa_role_create         = var.server_irsa_role_create
-      irsa_role_name           = "server"
+      irsa_role_name           = var.server_irsa_role_name
       irsa_additional_policies = var.server_irsa_additional_policies
     }
     dex-server = {
       service_account_create   = var.dex_server_service_account_create
       service_account_name     = var.dex_server_service_account_name
       irsa_role_create         = var.dex_server_irsa_role_create
-      irsa_role_name           = "dex-server"
+      irsa_role_name           = var.dex_server_irsa_role_name
       irsa_additional_policies = var.dex_server_irsa_additional_policies
     }
     repo-server = {
       service_account_create   = var.repo_server_service_account_create
       service_account_name     = var.repo_server_service_account_name
       irsa_role_create         = var.repo_server_irsa_role_create
-      irsa_role_name           = "repo-server"
+      irsa_role_name           = var.repo_server_irsa_role_name
       irsa_additional_policies = var.repo_server_irsa_additional_policies
     }
   }
