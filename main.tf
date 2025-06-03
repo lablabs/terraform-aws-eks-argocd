@@ -14,6 +14,10 @@ locals {
     helm_chart_name    = "argo-cd"
     helm_chart_version = "7.8.23" # 2.14.9
     helm_repo_url      = "https://argoproj.github.io/argo-helm"
+
+    argo_metadata = {
+      finalizers = [] # by default ArgoCD metadata sets finalizer to "resources-finalizer.argocd.argoproj.io" which would create a deadlock
+    }
   }
 
   addon_irsa = {
