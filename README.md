@@ -71,7 +71,7 @@ See [basic example](examples/basic) for further information.
 
 | Name | Description | Type |
 |------|-------------|------|
-| <a name="input_addon_depends_on"></a> [addon\_depends\_on](#input\_addon\_depends\_on) | List of resources to wait for before installing the addon. Typically used to force a dependency on another addon. | `list(any)` |
+| <a name="input_addon_depends_on"></a> [addon\_depends\_on](#input\_addon\_depends\_on) | List of resources to wait for before installing the addon. Typically used to force a dependency on another addon. | `any` |
 | <a name="input_application_controller_irsa_additional_policies"></a> [application\_controller\_irsa\_additional\_policies](#input\_application\_controller\_irsa\_additional\_policies) | Additional IAM policies to attach to the ArgoCD Application controller IRSA role. | `map(string)` |
 | <a name="input_application_controller_irsa_role_create"></a> [application\_controller\_irsa\_role\_create](#input\_application\_controller\_irsa\_role\_create) | Set to false to prevent the ArgoCD Application controller IRSA role from being created. | `bool` |
 | <a name="input_application_controller_irsa_role_name"></a> [application\_controller\_irsa\_role\_name](#input\_application\_controller\_irsa\_role\_name) | Name of the ArgoCD Application controller IRSA role. | `string` |
