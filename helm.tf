@@ -43,31 +43,21 @@ resource "helm_release" "self_managed" {
     var.values
   ])
 
-  dynamic "set" {
-    for_each = var.settings != null ? var.settings : try(local.addon.settings, tomap({}))
-
-    content {
-      name  = set.key
-      value = set.value
+  set = [
+    for name, value in var.settings : {
+      name  = name
+      value = value
     }
-  }
+  ]
 
-  dynamic "set_sensitive" {
-    for_each = var.helm_set_sensitive != null ? var.helm_set_sensitive : try(local.addon.helm_set_sensitive, {})
-
-    content {
-      name  = set_sensitive.key
-      value = set_sensitive.value
+  set_sensitive = [
+    for name, value in var.helm_set_sensitive : {
+      name  = name
+      value = value
     }
-  }
+  ]
 
-  dynamic "postrender" {
-    for_each = var.helm_postrender != null ? var.helm_postrender : try(local.addon.helm_postrender, {})
-
-    content {
-      binary_path = postrender.value
-    }
-  }
+  postrender = var.helm_postrender
 
   lifecycle {
     ignore_changes = all
