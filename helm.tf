@@ -38,7 +38,7 @@ resource "helm_release" "self_managed" {
   replace                    = var.helm_replace != null ? var.helm_replace : try(local.addon.helm_replace, false)
   description                = var.helm_description != null ? var.helm_description : try(local.addon.helm_description, "")
   lint                       = var.helm_lint != null ? var.helm_lint : try(local.addon.helm_lint, false)
-  upgrade_install            = false
+  upgrade_install            = var.self_managed_helm_upgrade_install
 
   values = compact([
     var.values

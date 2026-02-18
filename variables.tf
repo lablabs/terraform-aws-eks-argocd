@@ -14,6 +14,13 @@ variable "self_managed_helm_release_name" {
   nullable    = false
 }
 
+variable "self_managed_helm_upgrade_install" {
+  type        = bool
+  default     = false
+  description = "Set to true to enable Helm upgrade with --install flag for self-managed installation. This will install the release if it doesn't exist or upgrade it if it does."
+  nullable    = false
+}
+
 variable "application_controller_service_account_create" {
   type        = bool
   default     = true
