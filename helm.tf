@@ -12,14 +12,14 @@ resource "helm_release" "self_managed" {
   version          = var.helm_chart_version != null ? var.helm_chart_version : try(local.addon.helm_chart_version, null)
   repository       = var.helm_repo_url != null ? var.helm_repo_url : try(local.addon.helm_repo_url, null)
 
-  repository_key_file        = var.helm_repo_key_file != null ? var.helm_repo_key_file : try(local.addon.helm_repo_key_file, "")
-  repository_cert_file       = var.helm_repo_cert_file != null ? var.helm_repo_cert_file : try(local.addon.helm_repo_cert_file, "")
-  repository_ca_file         = var.helm_repo_ca_file != null ? var.helm_repo_ca_file : try(local.addon.helm_repo_ca_file, "")
-  repository_username        = var.helm_repo_username != null ? var.helm_repo_username : try(local.addon.helm_repo_username, "")
-  repository_password        = var.helm_repo_password != null ? var.helm_repo_password : try(local.addon.helm_repo_password, "")
+  repository_key_file        = var.helm_repo_key_file != null ? var.helm_repo_key_file : try(local.addon.helm_repo_key_file, null)
+  repository_cert_file       = var.helm_repo_cert_file != null ? var.helm_repo_cert_file : try(local.addon.helm_repo_cert_file, null)
+  repository_ca_file         = var.helm_repo_ca_file != null ? var.helm_repo_ca_file : try(local.addon.helm_repo_ca_file, null)
+  repository_username        = var.helm_repo_username != null ? var.helm_repo_username : try(local.addon.helm_repo_username, null)
+  repository_password        = var.helm_repo_password != null ? var.helm_repo_password : try(local.addon.helm_repo_password, null)
   devel                      = var.helm_devel != null ? var.helm_devel : try(local.addon.helm_devel, false)
   verify                     = var.helm_package_verify != null ? var.helm_package_verify : try(local.addon.helm_package_verify, false)
-  keyring                    = (var.helm_package_verify != null ? var.helm_package_verify : try(local.addon.helm_package_verify, false)) ? (var.helm_keyring != "" ? var.helm_keyring : try(local.addon.helm_keyring, "~/.gnupg/pubring.gpg")) : null
+  keyring                    = (var.helm_package_verify != null ? var.helm_package_verify : try(local.addon.helm_package_verify, false)) ? (var.helm_keyring != null ? var.helm_keyring : try(local.addon.helm_keyring, null)) : null
   timeout                    = var.helm_timeout != null ? var.helm_timeout : try(local.addon.helm_timeout, 300)
   disable_webhooks           = var.helm_disable_webhooks != null ? var.helm_disable_webhooks : try(local.addon.helm_disable_webhooks, false)
   reset_values               = var.helm_reset_values != null ? var.helm_reset_values : try(local.addon.helm_reset_values, false)
