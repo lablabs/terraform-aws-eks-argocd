@@ -19,7 +19,7 @@ resource "helm_release" "self_managed" {
   repository_password        = var.helm_repo_password != null ? var.helm_repo_password : try(local.addon.helm_repo_password, "")
   devel                      = var.helm_devel != null ? var.helm_devel : try(local.addon.helm_devel, false)
   verify                     = var.helm_package_verify != null ? var.helm_package_verify : try(local.addon.helm_package_verify, false)
-  keyring                    = var.helm_keyring != null ? var.helm_keyring : try(local.addon.helm_keyring, "~/.gnupg/pubring.gpg")
+  keyring                    = (var.helm_package_verify != null ? var.helm_package_verify : try(local.addon.helm_package_verify, false)) ? (var.helm_keyring != "" ? var.helm_keyring : try(local.addon.helm_keyring, "~/.gnupg/pubring.gpg")) : null
   timeout                    = var.helm_timeout != null ? var.helm_timeout : try(local.addon.helm_timeout, 300)
   disable_webhooks           = var.helm_disable_webhooks != null ? var.helm_disable_webhooks : try(local.addon.helm_disable_webhooks, false)
   reset_values               = var.helm_reset_values != null ? var.helm_reset_values : try(local.addon.helm_reset_values, false)
@@ -36,13 +36,11 @@ resource "helm_release" "self_managed" {
   disable_openapi_validation = var.helm_disable_openapi_validation != null ? var.helm_disable_openapi_validation : try(local.addon.helm_disable_openapi_validation, false)
   dependency_update          = var.helm_dependency_update != null ? var.helm_dependency_update : try(local.addon.helm_dependency_update, false)
   replace                    = var.helm_replace != null ? var.helm_replace : try(local.addon.helm_replace, false)
-  description                = var.helm_description != null ? var.helm_description : try(local.addon.helm_description, "")
+  description                = var.helm_description != null ? var.helm_description : try(local.addon.helm_description, null)
   lint                       = var.helm_lint != null ? var.helm_lint : try(local.addon.helm_lint, false)
   upgrade_install            = var.self_managed_helm_upgrade_install
 
-  values = compact([
-    var.values
-  ])
+  values = compact(data.utils_deep_merge_yaml.values[*].output)
 
   set = [
     for name, value in var.settings : {

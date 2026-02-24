@@ -260,8 +260,9 @@ variable "helm_package_verify" {
 
 variable "helm_keyring" {
   type        = string
-  default     = null
+  default     = ""
   description = "Location of public keys used for verification. Used only if `helm_package_verify` is `true`. Defaults to `~/.gnupg/pubring.gpg`."
+  nullable    = false
 }
 
 variable "helm_timeout" {
