@@ -1,0 +1,15 @@
+# IMPORTANT: Add addon specific variables here
+
+variable "self_managed" {
+  type        = bool
+  default     = true
+  description = "If set to true, the module will create ArgoCD Application manifest in the cluster and abandon the Helm release"
+  nullable    = false
+}
+
+variable "self_managed_helm_release_name" {
+  type        = string
+  default     = ""
+  description = "Helm release name for self-managed installation. Required if `self_managed` is set to `true`."
+  nullable    = false
+}

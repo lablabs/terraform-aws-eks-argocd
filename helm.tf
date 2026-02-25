@@ -12,14 +12,14 @@ resource "helm_release" "self_managed" {
   version          = var.helm_chart_version != null ? var.helm_chart_version : try(local.addon.helm_chart_version, null)
   repository       = var.helm_repo_url != null ? var.helm_repo_url : try(local.addon.helm_repo_url, null)
 
-  repository_key_file        = var.helm_repo_key_file != null ? var.helm_repo_key_file : try(local.addon.helm_repo_key_file, "")
-  repository_cert_file       = var.helm_repo_cert_file != null ? var.helm_repo_cert_file : try(local.addon.helm_repo_cert_file, "")
-  repository_ca_file         = var.helm_repo_ca_file != null ? var.helm_repo_ca_file : try(local.addon.helm_repo_ca_file, "")
-  repository_username        = var.helm_repo_username != null ? var.helm_repo_username : try(local.addon.helm_repo_username, "")
-  repository_password        = var.helm_repo_password != null ? var.helm_repo_password : try(local.addon.helm_repo_password, "")
+  repository_key_file        = var.helm_repo_key_file != null ? var.helm_repo_key_file : try(local.addon.helm_repo_key_file, null)
+  repository_cert_file       = var.helm_repo_cert_file != null ? var.helm_repo_cert_file : try(local.addon.helm_repo_cert_file, null)
+  repository_ca_file         = var.helm_repo_ca_file != null ? var.helm_repo_ca_file : try(local.addon.helm_repo_ca_file, null)
+  repository_username        = var.helm_repo_username != null ? var.helm_repo_username : try(local.addon.helm_repo_username, null)
+  repository_password        = var.helm_repo_password != null ? var.helm_repo_password : try(local.addon.helm_repo_password, null)
   devel                      = var.helm_devel != null ? var.helm_devel : try(local.addon.helm_devel, false)
   verify                     = var.helm_package_verify != null ? var.helm_package_verify : try(local.addon.helm_package_verify, false)
-  keyring                    = var.helm_keyring != null ? var.helm_keyring : try(local.addon.helm_keyring, "~/.gnupg/pubring.gpg")
+  keyring                    = (var.helm_package_verify != null ? var.helm_package_verify : try(local.addon.helm_package_verify, false)) ? (var.helm_keyring != null ? var.helm_keyring : try(local.addon.helm_keyring, "~/.gnupg/pubring.gpg")) : null
   timeout                    = var.helm_timeout != null ? var.helm_timeout : try(local.addon.helm_timeout, 300)
   disable_webhooks           = var.helm_disable_webhooks != null ? var.helm_disable_webhooks : try(local.addon.helm_disable_webhooks, false)
   reset_values               = var.helm_reset_values != null ? var.helm_reset_values : try(local.addon.helm_reset_values, false)
@@ -36,38 +36,26 @@ resource "helm_release" "self_managed" {
   disable_openapi_validation = var.helm_disable_openapi_validation != null ? var.helm_disable_openapi_validation : try(local.addon.helm_disable_openapi_validation, false)
   dependency_update          = var.helm_dependency_update != null ? var.helm_dependency_update : try(local.addon.helm_dependency_update, false)
   replace                    = var.helm_replace != null ? var.helm_replace : try(local.addon.helm_replace, false)
-  description                = var.helm_description != null ? var.helm_description : try(local.addon.helm_description, "")
+  description                = var.helm_description != null ? var.helm_description : try(local.addon.helm_description, null)
   lint                       = var.helm_lint != null ? var.helm_lint : try(local.addon.helm_lint, false)
 
-  values = compact([
-    var.values
-  ])
+  values = compact(data.utils_deep_merge_yaml.values[*].output)
 
-  dynamic "set" {
-    for_each = var.settings != null ? var.settings : try(local.addon.settings, tomap({}))
-
-    content {
-      name  = set.key
-      value = set.value
+  set = [
+    for name, value in var.settings : {
+      name  = name
+      value = value
     }
-  }
+  ]
 
-  dynamic "set_sensitive" {
-    for_each = var.helm_set_sensitive != null ? var.helm_set_sensitive : try(local.addon.helm_set_sensitive, {})
-
-    content {
-      name  = set_sensitive.key
-      value = set_sensitive.value
+  set_sensitive = [
+    for name, value in var.helm_set_sensitive : {
+      name  = name
+      value = value
     }
-  }
+  ]
 
-  dynamic "postrender" {
-    for_each = var.helm_postrender != null ? var.helm_postrender : try(local.addon.helm_postrender, {})
-
-    content {
-      binary_path = postrender.value
-    }
-  }
+  postrender = var.helm_postrender
 
   lifecycle {
     ignore_changes = all
