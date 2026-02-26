@@ -219,6 +219,36 @@ check your code before you will create pull-requests. See
 [GitHub Actions documentation](https://docs.github.com/en/actions) for further
 details.
 
+## Upgrade to Terraform Helm provider v3
+
+Helm provider `v3` changes provider/resource schema representation (SDKv2 ->
+Plugin Framework). First plan after upgrade may show
+`Warning: UpgradeState Triggered`; this is expected.
+
+### Migration steps (v2 -> v3)
+
+1. **Update provider version and lock file**
+   - Set Helm provider to `v3` in version constraints
+   - Run init to refresh `.terraform.lock.hcl`
+
+2. **Update Helm provider configuration syntax**
+   - Convert nested blocks to object attributes
+   - Example: `kubernetes { ... }` -> `kubernetes = { ... }`
+   - Example: `kubernetes.exec { ... }` -> `kubernetes = { exec = { ... } }`
+
+3. **Update direct Helm resource syntax (if used)**
+   - Convert `set`, `set_list`, `set_sensitive` blocks to lists of objects
+   - Example: `set = [{ ... }]`
+
+4. **Validate**
+   - Run `terraform init && terraform plan`
+   - Apply after reviewing expected schema-related plan changes
+
+For upstream provider details and all schema examples, see the official
+upgrade guide:
+
+https://github.com/hashicorp/terraform-provider-helm/blob/v3.0.0/docs/guides/v3-upgrade-guide.md
+
 ## License
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
