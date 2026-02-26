@@ -219,8 +219,6 @@ check your code before you will create pull-requests. See
 [GitHub Actions documentation](https://docs.github.com/en/actions) for further
 details.
 
-https://github.com/hashicorp/terraform-provider-helm/blob/v3.0.0/docs/guides/v3-upgrade-guide.md
-
 ## License
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
