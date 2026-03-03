@@ -48,12 +48,12 @@ resource "helm_release" "self_managed" {
     }
   ]
 
-  set_sensitive = [
+  set_sensitive = var.helm_set_sensitive != null ? [
     for name, value in var.helm_set_sensitive : {
       name  = name
       value = value
     }
-  ]
+  ] : null
 
   postrender = var.helm_postrender
 
