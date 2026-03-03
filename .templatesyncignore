@@ -1,4 +1,6 @@
+.templatesyncignore
 modules
+tests
 examples/basic/main.tf
 main.tf
 variables.tf
