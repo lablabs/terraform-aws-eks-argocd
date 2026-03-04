@@ -374,9 +374,8 @@ variable "helm_lint" {
 
 variable "helm_set_sensitive" {
   type        = map(any)
-  default     = {}
-  description = "Value block with custom sensitive values to be merged with the values yaml that won't be exposed in the plan's diff."
-  nullable    = false
+  default     = null
+  description = "Value block with custom sensitive values to be merged with the values yaml that won't be exposed in the plan's diff. Defaults to `{}`."
 }
 
 variable "helm_postrender" {
