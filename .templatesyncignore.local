@@ -1,0 +1,5 @@
+helm.tf
+variables-self-managed.tf
+validations.tf
+addon-oidc.tf
+variables-addon-oidc.tf
