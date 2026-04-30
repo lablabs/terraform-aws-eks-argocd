@@ -1,4 +1,3 @@
-.templatesyncignore
 modules
 tests
 examples/basic/main.tf
@@ -8,5 +7,5 @@ README.md
 .secrets.baseline
 .github/workflows/renovate.yaml
 renovate.json
-addon-oidc.tf
-variables-addon-oidc.tf
+migrations.tf
+.templatesyncignore.local
