@@ -39,7 +39,10 @@ resource "helm_release" "self_managed" {
   description                = var.helm_description != null ? var.helm_description : try(local.addon.helm_description, null)
   lint                       = var.helm_lint != null ? var.helm_lint : try(local.addon.helm_lint, false)
 
-  values = compact(data.utils_deep_merge_yaml.values[*].output)
+  values = [provider::lara-utils::yaml_deep_merge(compact([
+    local.addon_values,
+    var.values
+  ]))]
 
   set = [
     for name, value in var.settings : {
