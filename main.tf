@@ -12,7 +12,7 @@ locals {
     namespace = "argo"
 
     helm_chart_name    = "argo-cd"
-    helm_chart_version = "7.8.23" # 2.14.9
+    helm_chart_version = "10.2.2" # 3.4.12
     helm_repo_url      = "https://argoproj.github.io/argo-helm"
 
     argo_metadata = {
